@@ -42,5 +42,6 @@ class MouseEvents extends events_1.EventEmitter {
     }
 }
 const mouseEvents = new MouseEvents();
-exports.default = mouseEvents;
+//exports.default = mouseEvents;
+module.exports = mouseEvents;
 //# sourceMappingURL=index.js.map
