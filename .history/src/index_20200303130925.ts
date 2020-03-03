@@ -53,5 +53,4 @@ class MouseEvents extends EventEmitter {
 
 const mouseEvents = new MouseEvents();
 
-//export default mouseEvents;
-module.exports = mouseEvents;
+export default mouseEvents;

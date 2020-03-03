@@ -22,13 +22,11 @@ LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam) {
             which = "mouse1";
         } else if (wParam == WM_RBUTTONUP || wParam == WM_RBUTTONDOWN) {
             which = "mouse2";
-        }else if (wParam == WM_MBUTTONUP || wParam == WM_MBUTTONDOWN) {
-            which = "mouse3";
         }
 
-        if (wParam == WM_LBUTTONUP || wParam == WM_RBUTTONUP || wParam == WM_MBUTTONUP) {
+        if (wParam == WM_LBUTTONUP || wParam == WM_RBUTTONUP) {
             name = "mouse-up";
-        } else if (wParam == WM_LBUTTONDOWN || wParam == WM_RBUTTONDOWN || wParam == WM_MBUTTONDOWN) {
+        } else if (wParam == WM_LBUTTONDOWN || wParam == WM_RBUTTONDOWN) {
             name = "mouse-down";
         } else if (wParam == WM_MOUSEMOVE) {
             name = "mouse-move";
