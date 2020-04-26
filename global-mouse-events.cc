@@ -26,6 +26,10 @@ LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam) {
             button = 2;
         } else if (wParam == WM_MBUTTONUP || wParam == WM_MBUTTONDOWN) {
             button = 3;
+        } else if (wParam == WM_MOUSEWHEEL) {
+            button = 0;
+        } else if (wParam == WM_MOUSEHWHEEL) {
+            button = 1;
         }
 
         if (wParam == WM_LBUTTONUP || wParam == WM_RBUTTONUP || wParam == WM_MBUTTONUP) {

@@ -23,6 +23,7 @@ class MouseEvents extends EventEmitter {
                     const payload = { x: e.x, y: e.y }
                     if (e.event === "mousewheel") {
                         payload.delta = FromInt32(e.delta) / 120;
+                        payload.axis = e.button
                     } else if(e.event === "mousedown" || e.event === "mouseup") {
                         payload.button = e.button;
                     }

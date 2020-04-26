@@ -29,6 +29,7 @@ Returns:
 - **x:** The X position of the mouse, relative to the top left of the primary display.
 - **y:** The Y position of the mouse, relative to the top left of the primary display.
 - **delta:** How much the mouse wheel was scrolled. Positive numbers are considered "up" and negative numbers are "down".
+- **axis:** Whether the scroll was vertical or horizontal. 0 is vertical. 1 is horizontal.
 
 ### Example
 
@@ -36,11 +37,11 @@ Returns:
 const mouseEvents = require("global-mouse-events");
 
 mouseEvents.on("mouseup", event => {
-  console.log(event); // { x: 2962, y: 483, button: '1' }
+  console.log(event); // { x: 2962, y: 483, button: 1 }
 });
 
 mouseEvents.on("mousedown", event => {
-  console.log(event); // { x: 2962, y: 483, button: '1' }
+  console.log(event); // { x: 2962, y: 483, button: 1 }
 });
 
 mouseEvents.on("mousemove", event => {
@@ -48,6 +49,6 @@ mouseEvents.on("mousemove", event => {
 });
 
 mouseEvents.on("mousewheel", event => {
-  console.log(event); // { x: 2962, y: 483, delta: -1 }
+  console.log(event); // { x: 2962, y: 483, delta: -1, axis: 0 }
 });
 ```
