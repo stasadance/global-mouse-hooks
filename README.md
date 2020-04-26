@@ -4,8 +4,8 @@ Global mouse events listener for Node.js (Windows only). Based off of [sentialx/
 
 ## Installation
 
-```bash
-$ npm install global-mouse-events
+```cmd
+npm i global-mouse-events
 ```
 
 ## Usage
