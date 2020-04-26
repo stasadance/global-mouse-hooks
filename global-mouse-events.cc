@@ -15,27 +15,33 @@ LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam) {
         auto x = Napi::Number::New((*_info).Env(), data->pt.x);
         auto y = Napi::Number::New((*_info).Env(), data->pt.y);
 
+        auto mouseData = Napi::Number::New((*_info).Env(), data->mouseData);
+
         auto name = "";
-        auto which = "";
+        auto button = "";
 
         if (wParam == WM_LBUTTONUP || wParam == WM_LBUTTONDOWN) {
-            which = "mouse1";
+            button = "1";
         } else if (wParam == WM_RBUTTONUP || wParam == WM_RBUTTONDOWN) {
-            which = "mouse2";
+            button = "2";
+        } else if (wParam == WM_MBUTTONUP || wParam == WM_MBUTTONDOWN) {
+            button = "3";
         }
 
-        if (wParam == WM_LBUTTONUP || wParam == WM_RBUTTONUP) {
-            name = "mouse-up";
-        } else if (wParam == WM_LBUTTONDOWN || wParam == WM_RBUTTONDOWN) {
-            name = "mouse-down";
+        if (wParam == WM_LBUTTONUP || wParam == WM_RBUTTONUP || wParam == WM_MBUTTONUP) {
+            name = "mouseup";
+        } else if (wParam == WM_LBUTTONDOWN || wParam == WM_RBUTTONDOWN || wParam == WM_MBUTTONDOWN) {
+            name = "mousedown";
         } else if (wParam == WM_MOUSEMOVE) {
-            name = "mouse-move";
+            name = "mousemove";
+        } else if (wParam == WM_MOUSEWHEEL || wParam == WM_MOUSEHWHEEL) {
+            name = "scroll";
         }
 
         if (name != "") {
             cb.Call((*_info).Env().Global(),
                     {Napi::String::New((*_info).Env(), name), x, y,
-                     Napi::String::New((*_info).Env(), which)});
+                     Napi::String::New((*_info).Env(), button), mouseData});
         }
     }
 
@@ -63,4 +69,4 @@ Napi::Object Init(Napi::Env env, Napi::Object exports) {
     return exports;
 }
 
-NODE_API_MODULE(addon, Init)
+NODE_API_MODULE(NODE_GYP_MODULE_NAME, Init)

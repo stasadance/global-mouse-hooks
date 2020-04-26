@@ -1,48 +1,44 @@
 {
-  "name": "mouse-hooks",
+  "name": "global-mouse-events",
   "version": "0.4.1",
-  "description": "Global mouse events listener for Node.js",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Global mouse events listener for Node.js (Windows only)",
+  "main": "index.js",
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc --watch",
+    "start": "node example.js",
     "rebuild": "node-gyp rebuild",
-    "prepublishOnly": "npm run build",
     "install": "npm run rebuild"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sentialx/mouse-hooks.git"
+    "url": "git+https://github.com/xanderfrangos/global-mouse-events.git"
   },
   "keywords": [
     "mouse-hooks",
-    "native",
-    "macos",
-    "linux",
-    "windows"
+    "windows",
+    "mouse-events",
+    "mouse",
+    "windows-hooks",
+    "hooks",
+    "global"
   ],
-  "author": "sentialx",
+  "author": "xanderfrangos",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sentialx/mouse-hooks/issues"
+    "url": "https://github.com/xanderfrangos/global-mouse-events/issues"
   },
-  "homepage": "https://github.com/sentialx/mouse-hooks#readme",
+  "homepage": "https://github.com/xanderfrangos/global-mouse-events#readme",
   "dependencies": {
     "bindings": "1.5.0",
     "node-gyp": "5.0.2",
     "node-addon-api": "1.6.3"
   },
   "files": [
-    "mouse.js",
-    "lib/",
-    "dist/",
-    "binding.gyp",
-    "install.js"
+    "index.js",
+    "example.js",
+    "thread.js",
+    "binding.gyp"
   ],
   "devDependencies": {
-    "tslint": "5.18.0",
-    "@types/node": "12.6.2",
-    "typescript": "3.5.3"
+    "@types/node": "12.6.2"
   }
 }

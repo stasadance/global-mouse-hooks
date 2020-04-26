@@ -1,12 +1,12 @@
 {
   "targets": [
     {
-      "target_name": "addon",
+      "target_name": "global_mouse_events",
       "cflags!": [ "-fno-exceptions" ],
       "cflags_cc!": [ "-fno-exceptions" ],
       "conditions": [
         ["OS=='win'", {
-      	  "sources": [ "lib/windows.cc" ]
+      	  "sources": [ "global-mouse-events.cc" ]
       	}],
       ],
       "include_dirs": [

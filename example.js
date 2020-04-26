@@ -1,9 +1,17 @@
-const mouseEvents = require("./dist/index");
+const mouseEvents = require("./index");
 
-mouseEvents.default.on("mouse-up", data => {
+mouseEvents.on("mouseup", data => {
   console.log(data);
 });
 
-mouseEvents.default.on("mouse-move", data => {
+mouseEvents.on("mousemove", data => {
+  console.log(data);
+});
+
+mouseEvents.on("mousedown", data => {
+  console.log(data);
+});
+
+mouseEvents.on("scroll", data => {
   console.log(data);
 });
