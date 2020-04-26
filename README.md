@@ -36,18 +36,18 @@ Returns:
 const mouseEvents = require("global-mouse-events");
 
 mouseEvents.on("mouseup", event => {
-  console.log(event); // { screenX: 2962, screenY: 483, button: '1' }
+  console.log(event); // { x: 2962, y: 483, button: '1' }
 });
 
 mouseEvents.on("mousedown", event => {
-  console.log(event); // { screenX: 2962, screenY: 483, button: '1' }
+  console.log(event); // { x: 2962, y: 483, button: '1' }
 });
 
 mouseEvents.on("mousemove", event => {
-  console.log(event); // { screenX: 2962, screenY: 482 }
+  console.log(event); // { x: 2962, y: 482 }
 });
 
 mouseEvents.on("mousewheel", event => {
-  console.log(event); // { screenX: 2962, screenY: 483, delta: -1 }
+  console.log(event); // { x: 2962, y: 483, delta: -1 }
 });
 ```
