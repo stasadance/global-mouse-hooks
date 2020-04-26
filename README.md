@@ -24,7 +24,7 @@ Returns:
 - **x:** The X position of the mouse, relative to the top left of the primary display.
 - **y:** The Y position of the mouse, relative to the top left of the primary display.
 
-**scroll** - *Fires when the mouse wheel is scrolled. Some trackpads may not fire this event unless "Scroll inactive windows when I hover over them" is disabled in the Windows settings.*\
+**mousewheel** - *Fires when the mouse wheel is scrolled. Some trackpads may not fire this event unless "Scroll inactive windows when I hover over them" is disabled in the Windows settings.*\
 Returns:
 - **x:** The X position of the mouse, relative to the top left of the primary display.
 - **y:** The Y position of the mouse, relative to the top left of the primary display.
@@ -47,7 +47,7 @@ mouseEvents.on("mousemove", event => {
   console.log(event); // { screenX: 2962, screenY: 482 }
 });
 
-mouseEvents.on("scroll", event => {
+mouseEvents.on("mousewheel", event => {
   console.log(event); // { screenX: 2962, screenY: 483, delta: -1 }
 });
 ```

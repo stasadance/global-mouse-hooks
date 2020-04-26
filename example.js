@@ -12,6 +12,6 @@ mouseEvents.on("mousedown", data => {
   console.log(data);
 });
 
-mouseEvents.on("scroll", data => {
+mouseEvents.on("mousewheel", data => {
   console.log(data);
 });

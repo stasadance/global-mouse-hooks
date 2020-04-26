@@ -16,12 +16,12 @@ class MouseEvents extends EventEmitter {
             if (registeredEvents.indexOf(event) !== -1)
                 return;
 
-            if ((event === "mouseup" || event === "mousedown" || event === "mousemove" || event === "scroll") && !mouseProcess) {
+            if ((event === "mouseup" || event === "mousedown" || event === "mousemove" || event === "mousewheel") && !mouseProcess) {
                 
                 mouseProcess = fork(path.join(__dirname, "./thread.js"));
                 mouseProcess.on("message", e => {
                     const payload = { x: e.x, y: e.y }
-                    if (e.event === "scroll") {
+                    if (e.event === "mousewheel") {
                         payload.delta = FromInt32(e.delta) / 120;
                     } else if(e.event === "mousedown" || e.event === "mouseup") {
                         payload.button = e.button;
@@ -40,7 +40,7 @@ class MouseEvents extends EventEmitter {
             if (this.listenerCount(event) > 0)
                 return;
 
-            if ((event === "mouseup" || event === "mousedown" || event === "mousemove" || event === "scroll") && mouseProcess) {
+            if ((event === "mouseup" || event === "mousedown" || event === "mousemove" || event === "mousewheel") && mouseProcess) {
                 mouseProcess.kill();
             }
 

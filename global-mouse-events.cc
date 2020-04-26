@@ -35,7 +35,7 @@ LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam) {
         } else if (wParam == WM_MOUSEMOVE) {
             name = "mousemove";
         } else if (wParam == WM_MOUSEWHEEL || wParam == WM_MOUSEHWHEEL) {
-            name = "scroll";
+            name = "mousewheel";
         }
 
         if (name != "") {
