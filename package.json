@@ -1,6 +1,6 @@
 {
   "name": "global-mouse-events",
-  "version": "0.4.1",
+  "version": "0.4.1-b",
   "description": "Global mouse events listener for Node.js (Windows only)",
   "main": "index.js",
   "scripts": {
@@ -34,9 +34,10 @@
   },
   "files": [
     "index.js",
-    "example.js",
     "thread.js",
-    "binding.gyp"
+    "binding.gyp",
+    "global-mouse-events.cc",
+    "LICENSE"
   ],
   "devDependencies": {
     "@types/node": "12.6.2"
