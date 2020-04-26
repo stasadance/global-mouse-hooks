@@ -18,14 +18,14 @@ LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam) {
         auto mouseData = Napi::Number::New((*_info).Env(), data->mouseData);
 
         auto name = "";
-        auto button = "";
+        auto button = -1;
 
         if (wParam == WM_LBUTTONUP || wParam == WM_LBUTTONDOWN) {
-            button = "1";
+            button = 1;
         } else if (wParam == WM_RBUTTONUP || wParam == WM_RBUTTONDOWN) {
-            button = "2";
+            button = 2;
         } else if (wParam == WM_MBUTTONUP || wParam == WM_MBUTTONDOWN) {
-            button = "3";
+            button = 3;
         }
 
         if (wParam == WM_LBUTTONUP || wParam == WM_RBUTTONUP || wParam == WM_MBUTTONUP) {
@@ -41,7 +41,7 @@ LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam) {
         if (name != "") {
             cb.Call((*_info).Env().Global(),
                     {Napi::String::New((*_info).Env(), name), x, y,
-                     Napi::String::New((*_info).Env(), button), mouseData});
+                     Napi::Number::New((*_info).Env(), button), mouseData});
         }
     }
 
