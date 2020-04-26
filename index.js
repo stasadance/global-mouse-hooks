@@ -1,6 +1,7 @@
 "use strict";
 const { EventEmitter } = require("events");
 const { fork } = require("child_process");
+const path = require("path");
 let registeredEvents = [];
 let mouseProcess;
 
@@ -17,7 +18,7 @@ class MouseEvents extends EventEmitter {
 
             if ((event === "mouseup" || event === "mousedown" || event === "mousemove" || event === "scroll") && !mouseProcess) {
                 
-                mouseProcess = fork("thread.js");
+                mouseProcess = fork(path.join(__dirname, "./thread.js"));
                 mouseProcess.on("message", e => {
                     const payload = { x: e.x, y: e.y }
                     if (e.event === "scroll") {
