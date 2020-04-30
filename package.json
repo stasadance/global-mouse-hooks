@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/xanderfrangos/global-mouse-events.git"
+    "url": "git://github.com/xanderfrangos/global-mouse-events.git"
   },
   "keywords": [
     "mouse-hooks",
@@ -19,7 +19,8 @@
     "mouse",
     "windows-hooks",
     "hooks",
-    "global"
+    "global",
+    "node"
   ],
   "author": "xanderfrangos",
   "license": "MIT",
