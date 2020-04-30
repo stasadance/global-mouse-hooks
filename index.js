@@ -1,9 +1,6 @@
 "use strict";
 const { EventEmitter } = require("events");
-const { fork } = require("child_process");
-const path = require("path");
-let registeredEvents = [];
-let mouseProcess;
+const addon = require("bindings")("global_mouse_events");
 
 class MouseEvents extends EventEmitter {
     constructor() {
@@ -12,24 +9,26 @@ class MouseEvents extends EventEmitter {
         if (require("os").platform() !== "win32")
             return;
 
+        let createdListener = false;
+        let registeredEvents = [];
+
         this.on("newListener", event => {
             if (registeredEvents.indexOf(event) !== -1)
                 return;
 
-            if ((event === "mouseup" || event === "mousedown" || event === "mousemove" || event === "mousewheel") && !mouseProcess) {
-                
-                mouseProcess = fork(path.join(__dirname, "./thread.js"));
-                mouseProcess.on("message", e => {
-                    const payload = { x: e.x, y: e.y }
-                    if (e.event === "mousewheel") {
-                        payload.delta = FromInt32(e.delta) / 120;
-                        payload.axis = e.button
-                    } else if(e.event === "mousedown" || e.event === "mouseup") {
-                        payload.button = e.button;
+            if ((event === "mouseup" || event === "mousedown" || event === "mousemove" || event === "mousewheel") && !createdListener) {
+                // Careful: this currently "leaks" a thread every time it's called.
+                // We should probably get around to fixing that.
+                createdListener = addon.createMouseHook((event, x, y, button, delta) => {
+                    const payload = { x, y };
+                    if (event === "mousewheel") {
+                        payload.delta = FromInt32(delta) / 120;
+                        payload.axis = button;
+                    } else if(event === "mousedown" || event === "mouseup") {
+                        payload.button = button;
                     }
-                    this.emit(e.event, payload);
+                    this.emit(event, payload);
                 });
-
             } else {
                 return;
             }
@@ -40,10 +39,6 @@ class MouseEvents extends EventEmitter {
         this.on("removeListener", event => {
             if (this.listenerCount(event) > 0)
                 return;
-
-            if ((event === "mouseup" || event === "mousedown" || event === "mousemove" || event === "mousewheel") && mouseProcess) {
-                mouseProcess.kill();
-            }
 
             registeredEvents = registeredEvents.filter(x => x !== event);
         });
