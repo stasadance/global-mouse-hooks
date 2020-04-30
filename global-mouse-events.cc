@@ -1,21 +1,37 @@
 #include <napi.h>
 #include <windows.h>
 #include <string>
-
-Napi::CallbackInfo *_info;
+#include <iostream>
 
 HHOOK _hook;
+Napi::ThreadSafeFunction _tsfn;
+HANDLE _hThread;
 
-LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam) {
-    auto cb = (*_info)[0].As<Napi::Function>();
+struct MouseEventContext {
+    public:
+        int nCode;
+        WPARAM wParam;
+        LONG ptX;
+        LONG ptY;
+        DWORD mouseData;
+};
+
+void onMainThread(Napi::Env env, Napi::Function function, MouseEventContext *pMouseEvent) {
+    auto nCode = pMouseEvent->nCode;
+    auto wParam = pMouseEvent->wParam;
+    auto ptX = pMouseEvent->ptX;
+    auto ptY = pMouseEvent->ptY;
+    auto nMouseData = pMouseEvent->mouseData;
+
+    delete pMouseEvent;
 
     if (nCode >= 0) {
-        MSLLHOOKSTRUCT *data = (MSLLHOOKSTRUCT *)lParam;
+        Napi::HandleScope scope(env);
 
-        auto x = Napi::Number::New((*_info).Env(), data->pt.x);
-        auto y = Napi::Number::New((*_info).Env(), data->pt.y);
+        auto x = Napi::Number::New(env, ptX);
+        auto y = Napi::Number::New(env, ptY);
 
-        auto mouseData = Napi::Number::New((*_info).Env(), data->mouseData);
+        auto mouseData = Napi::Number::New(env, nMouseData);
 
         auto name = "";
         auto button = -1;
@@ -43,26 +59,54 @@ LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam) {
         }
 
         if (name != "") {
-            cb.Call((*_info).Env().Global(),
-                    {Napi::String::New((*_info).Env(), name), x, y,
-                     Napi::Number::New((*_info).Env(), button), mouseData});
+            function.Call(env.Global(),
+                    {Napi::String::New(env, name), x, y,
+                     Napi::Number::New(env, button), mouseData});
         }
     }
+}
+
+LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam) {
+    MSLLHOOKSTRUCT *data = (MSLLHOOKSTRUCT *)lParam;
+    auto pMouseEvent = new MouseEventContext();
+    pMouseEvent->nCode = nCode;
+    pMouseEvent->wParam = wParam;
+    pMouseEvent->ptX = data->pt.x;
+    pMouseEvent->ptY = data->pt.y;
+    pMouseEvent->mouseData = data->mouseData;
+
+    _tsfn.NonBlockingCall(pMouseEvent, onMainThread);
 
     return CallNextHookEx(_hook, nCode, wParam, lParam);
 }
 
-Napi::Boolean createMouseHook(const Napi::CallbackInfo &info) {
-    _info = &(const_cast<Napi::CallbackInfo &>(info));
-
+DWORD WINAPI MouseHookThread(LPVOID lpParam) {
+    MSG msg;
     _hook = SetWindowsHookEx(WH_MOUSE_LL, HookCallback, NULL, 0);
 
-    MSG msg;
     while (GetMessage(&msg, NULL, 0, 0) > 0) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
 
+    _tsfn.Release();
+    return 0;
+}
+
+Napi::Boolean createMouseHook(const Napi::CallbackInfo &info) {
+    DWORD dwThreadID;
+
+    _hThread = CreateThread(NULL, 0, MouseHookThread, NULL, CREATE_SUSPENDED, &dwThreadID);
+    _tsfn = Napi::ThreadSafeFunction::New(
+        info.Env(),
+        info[0].As<Napi::Function>(),
+        "WH_MOUSE_LL Hook Thread",
+        512,
+        1,
+        [] ( Napi::Env ) { CloseHandle(_hThread); }
+    );
+
+    ResumeThread(_hThread);
     return Napi::Boolean::New(info.Env(), true);
 }
 

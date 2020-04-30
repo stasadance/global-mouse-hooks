@@ -15,3 +15,7 @@ mouseEvents.on("mousedown", data => {
 mouseEvents.on("mousewheel", data => {
   console.log(data);
 });
+
+setInterval(() => {
+  console.log("Still listening...");
+}, 5000);
