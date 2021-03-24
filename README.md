@@ -13,18 +13,18 @@ Import the module and register for the mouse events you'd like to listen to.
 
 ### Available event listeners
 
-**mouseup** / **mousedown** - *Fires when a mouse button is pressed / released.*\
+**`mouseup`** / **`mousedown`** — *Fires when a mouse button is pressed / released.*\
 Returns:
 - **x:** The X position of the mouse, relative to the top left of the primary display.
 - **y:** The Y position of the mouse, relative to the top left of the primary display.
 - **button:** Which button was pressed. 1 is left-click. 2 is right-click. 3 is middle-click.
 
-**mousemove** - *Fires when the mouse cursor is moved.*\
+**`mousemove`** — *Fires when the mouse cursor is moved.*\
 Returns:
 - **x:** The X position of the mouse, relative to the top left of the primary display.
 - **y:** The Y position of the mouse, relative to the top left of the primary display.
 
-**mousewheel** - *Fires when the mouse wheel is scrolled. Some trackpads may not fire this event unless "Scroll inactive windows when I hover over them" is disabled in the Windows settings.*\
+**`mousewheel`** — *Fires when the mouse wheel is scrolled. Some trackpads may not fire this event unless "Scroll inactive windows when I hover over them" is disabled in the Windows settings.*\
 Returns:
 - **x:** The X position of the mouse, relative to the top left of the primary display.
 - **y:** The Y position of the mouse, relative to the top left of the primary display.
