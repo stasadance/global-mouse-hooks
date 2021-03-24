@@ -35,6 +35,7 @@
   },
   "files": [
     "index.js",
+    "index.d.js",
     "thread.js",
     "binding.gyp",
     "global-mouse-events.cc",
