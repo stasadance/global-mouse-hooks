@@ -16,6 +16,11 @@ class MouseEvents extends EventEmitter {
             if (registeredEvents.indexOf(event) !== -1)
                 return;
 
+            // Enable WM_MOUSEMOVE capture if requested
+            if(event === "mousemove") {
+                addon.enableMouseMove();
+            }
+
             if ((event === "mouseup" || event === "mousedown" || event === "mousemove" || event === "mousewheel") && !createdListener) {
                 // Careful: this currently "leaks" a thread every time it's called.
                 // We should probably get around to fixing that.

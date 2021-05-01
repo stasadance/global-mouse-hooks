@@ -6,6 +6,7 @@
 HHOOK _hook;
 Napi::ThreadSafeFunction _tsfn;
 HANDLE _hThread;
+boolean captureMouseMove = false;
 
 struct MouseEventContext {
     public:
@@ -52,7 +53,7 @@ void onMainThread(Napi::Env env, Napi::Function function, MouseEventContext *pMo
             name = "mouseup";
         } else if (wParam == WM_LBUTTONDOWN || wParam == WM_RBUTTONDOWN || wParam == WM_MBUTTONDOWN) {
             name = "mousedown";
-        } else if (wParam == WM_MOUSEMOVE) {
+        } else if (wParam == WM_MOUSEMOVE && captureMouseMove) {
             name = "mousemove";
         } else if (wParam == WM_MOUSEWHEEL || wParam == WM_MOUSEHWHEEL) {
             name = "mousewheel";
@@ -110,9 +111,16 @@ Napi::Boolean createMouseHook(const Napi::CallbackInfo &info) {
     return Napi::Boolean::New(info.Env(), true);
 }
 
+void enableMouseMove(const Napi::CallbackInfo &info) {
+    captureMouseMove = true;
+}
+
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
     exports.Set(Napi::String::New(env, "createMouseHook"),
                 Napi::Function::New(env, createMouseHook));
+
+    exports.Set(Napi::String::New(env, "enableMouseMove"),
+                Napi::Function::New(env, enableMouseMove));            
 
     return exports;
 }
