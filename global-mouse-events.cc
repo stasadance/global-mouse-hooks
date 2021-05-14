@@ -27,39 +27,51 @@ void onMainThread(Napi::Env env, Napi::Function function, MouseEventContext *pMo
     delete pMouseEvent;
 
     if (nCode >= 0) {
-        Napi::HandleScope scope(env);
-
-        auto x = Napi::Number::New(env, ptX);
-        auto y = Napi::Number::New(env, ptY);
-
-        auto mouseData = Napi::Number::New(env, nMouseData);
-
         auto name = "";
         auto button = -1;
 
-        if (wParam == WM_LBUTTONUP || wParam == WM_LBUTTONDOWN) {
-            button = 1;
-        } else if (wParam == WM_RBUTTONUP || wParam == WM_RBUTTONDOWN) {
-            button = 2;
-        } else if (wParam == WM_MBUTTONUP || wParam == WM_MBUTTONDOWN) {
-            button = 3;
-        } else if (wParam == WM_MOUSEWHEEL) {
-            button = 0;
-        } else if (wParam == WM_MOUSEHWHEEL) {
-            button = 1;
+        // Isolate mouse movement, as it's more CPU intensive
+        if (wParam == WM_MOUSEMOVE) {
+            // Is mouse movement
+            if(captureMouseMove) {
+                name = "mousemove";
+            }
+        } else {
+            // Is not mouse movement
+
+            // Determine event type
+            if (wParam == WM_LBUTTONUP || wParam == WM_RBUTTONUP || wParam == WM_MBUTTONUP) {
+                name = "mouseup";
+            } else if (wParam == WM_LBUTTONDOWN || wParam == WM_RBUTTONDOWN || wParam == WM_MBUTTONDOWN) {
+                name = "mousedown";
+            } else if (wParam == WM_MOUSEWHEEL || wParam == WM_MOUSEHWHEEL) {
+                name = "mousewheel";
+            }
+
+            // Determine button
+            if (wParam == WM_LBUTTONUP || wParam == WM_LBUTTONDOWN) {
+                button = 1;
+            } else if (wParam == WM_RBUTTONUP || wParam == WM_RBUTTONDOWN) {
+                button = 2;
+            } else if (wParam == WM_MBUTTONUP || wParam == WM_MBUTTONDOWN) {
+                button = 3;
+            } else if (wParam == WM_MOUSEWHEEL) {
+                button = 0;
+            } else if (wParam == WM_MOUSEHWHEEL) {
+                button = 1;
+            }
         }
 
-        if (wParam == WM_LBUTTONUP || wParam == WM_RBUTTONUP || wParam == WM_MBUTTONUP) {
-            name = "mouseup";
-        } else if (wParam == WM_LBUTTONDOWN || wParam == WM_RBUTTONDOWN || wParam == WM_MBUTTONDOWN) {
-            name = "mousedown";
-        } else if (wParam == WM_MOUSEMOVE && captureMouseMove) {
-            name = "mousemove";
-        } else if (wParam == WM_MOUSEWHEEL || wParam == WM_MOUSEHWHEEL) {
-            name = "mousewheel";
-        }
-
+        // Only proceed if an event was identified
         if (name != "") {
+            Napi::HandleScope scope(env);
+
+            auto x = Napi::Number::New(env, ptX);
+            auto y = Napi::Number::New(env, ptY);
+
+            auto mouseData = Napi::Number::New(env, nMouseData);
+
+            // Yell back to NodeJS
             function.Call(env.Global(),
                     {Napi::String::New(env, name), x, y,
                      Napi::Number::New(env, button), mouseData});
@@ -69,15 +81,22 @@ void onMainThread(Napi::Env env, Napi::Function function, MouseEventContext *pMo
 
 LRESULT CALLBACK HookCallback(int nCode, WPARAM wParam, LPARAM lParam) {
     MSLLHOOKSTRUCT *data = (MSLLHOOKSTRUCT *)lParam;
-    auto pMouseEvent = new MouseEventContext();
-    pMouseEvent->nCode = nCode;
-    pMouseEvent->wParam = wParam;
-    pMouseEvent->ptX = data->pt.x;
-    pMouseEvent->ptY = data->pt.y;
-    pMouseEvent->mouseData = data->mouseData;
 
-    _tsfn.NonBlockingCall(pMouseEvent, onMainThread);
+    // If not WM_MOUSEMOVE or WM_MOUSEMOVE has been requested, process event
+    if(!(wParam == WM_MOUSEMOVE && !captureMouseMove)) {
+        // Prepare data to be processed
+        auto pMouseEvent = new MouseEventContext();
+        pMouseEvent->nCode = nCode;
+        pMouseEvent->wParam = wParam;
+        pMouseEvent->ptX = data->pt.x;
+        pMouseEvent->ptY = data->pt.y;
+        pMouseEvent->mouseData = data->mouseData;
 
+        // Process event on non-blocking thread
+        _tsfn.NonBlockingCall(pMouseEvent, onMainThread);
+    }
+
+    // Let Windows continue with this event as normal
     return CallNextHookEx(_hook, nCode, wParam, lParam);
 }
 
