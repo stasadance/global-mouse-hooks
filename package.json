@@ -1,6 +1,6 @@
 {
     "name": "global-mouse-hooks",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Global mouse events listener for Node.js (Windows only) with prebuilds for napi",
     "main": "index.js",
     "scripts": {
@@ -42,7 +42,8 @@
         "global-mouse-events.cc",
         "LICENSE",
         "example.js",
-        "README.md"
+        "README.md",
+        "prebuilds/**/*"
     ],
     "devDependencies": {
         "@types/node": "^14.14.32",
