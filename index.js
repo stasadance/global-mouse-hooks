@@ -1,6 +1,6 @@
 "use strict";
 const { EventEmitter } = require("events");
-const addon = require("node-gyp-build")("global_mouse_events");
+const addon = require("node-gyp-build")(__dirname);
 
 class MouseEvents extends EventEmitter {
     constructor() {
